@@ -1,11 +1,11 @@
-const User = require("../models/user");
-const { secret } = require("../utils/keys");
-const bcrypt = require("bcrypt");
-const crypto = require("crypto");
-const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
-const sendgridTransport = require("nodemailer-sendgrid-transport");
-const { sendgridApiKey } = require("../utils/keys");
+const User = require('../models/user');
+const { secret } = require('../utils/keys');
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
+const { sendgridApiKey } = require('../utils/keys');
 
 //configure transporter for email
 
@@ -22,7 +22,7 @@ exports.signUpUser = (req, res, next) => {
   // hash the password first
   bcrypt.hash(req.body.password, 10, (err, hash) => {
     if (err) {
-      res.status(500).json({ error: "cannot register now tryagain later!" });
+      res.status(500).json({ error: 'cannot register now tryagain later!' });
     } else {
       (signUpData.name = req.body.name),
         (signUpData.email = req.body.email),
@@ -30,7 +30,7 @@ exports.signUpUser = (req, res, next) => {
         (signUpData.password = hash);
       User.findOne({ email: signUpData.email }).then(user => {
         if (user) {
-          res.status(406).json({ error: "email already exist" });
+          res.status(406).json({ error: 'email already exist' });
         } else {
           const newUser = new User(signUpData);
           newUser
@@ -38,7 +38,7 @@ exports.signUpUser = (req, res, next) => {
             .then(user => {
               if (!user) {
                 res.json({
-                  error: "no user created"
+                  error: 'no user created'
                 });
               }
               // transporter.sendMail({
@@ -62,15 +62,15 @@ exports.signUpUser = (req, res, next) => {
 exports.loginUser = (req, res, next) => {
   User.findOne({ email: req.body.email }).then(user => {
     if (!user) {
-      return res.status(400).json({ error: "email not found" });
+      return res.status(400).json({ email: 'email not found' });
     }
     // compare passwords
     bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
       if (err) {
         console.log(err);
-        return res.status(500).json({ error: "try again!" });
+        return res.status(500).json({ error: 'try again!' });
       } else if (!isMatch) {
-        return res.status(400).json({ error: "passwords incorrect" });
+        return res.status(400).json({ password: 'passwords incorrect' });
       } else if (isMatch) {
         // sign a jwt
         const payload = {
@@ -79,13 +79,16 @@ exports.loginUser = (req, res, next) => {
           username: user.username,
           email: user.email
         };
-        jwt.sign(payload, secret, { expiresIn: "2h" }, (err, token) => {
+        jwt.sign(payload, secret, { expiresIn: '2h' }, (err, token) => {
           if (err) {
             console.log(err);
             return res.status(500);
           } else {
             res.json({
-              login: "sucess",
+              email: user.email,
+              username: user.username,
+              id: user.id,
+
               token: `Bearer ${token}`
             });
           }
@@ -99,9 +102,9 @@ exports.loginUser = (req, res, next) => {
 exports.sendEmail = (req, res, next) => {
   crypto.randomBytes(32, (err, buffer) => {
     if (err) {
-      return res.status(500).json({ error: "crypto error" });
+      return res.status(500).json({ error: 'crypto error' });
     }
-    const token = buffer.toString("hex");
+    const token = buffer.toString('hex');
     User.findOne({ email: req.body.email })
       .then(user => {
         if (!user) {
@@ -118,8 +121,8 @@ exports.sendEmail = (req, res, next) => {
         transporter
           .sendMail({
             to: req.body.email,
-            from: "my@social-app.com",
-            subject: "Reset Password",
+            from: 'my@social-app.com',
+            subject: 'Reset Password',
             html: `
             <h2> Reset password</h2>
             <p> click the link bellow to reset your password
@@ -140,11 +143,11 @@ exports.resetPassword = (req, res) => {
   User.findOne({ resetToken: req.params.token })
     .then(user => {
       if (!user) {
-        return res.status(400).json({ error: "no token found" });
+        return res.status(400).json({ error: 'no token found' });
       } else {
         // check for expiration
         if (!user.resetTokenExpiration > Date().now) {
-          return res.json({ error: "token expired" });
+          return res.json({ error: 'token expired' });
         } else {
           // reset password here
           //hash the password again
@@ -152,7 +155,7 @@ exports.resetPassword = (req, res) => {
             if (err) {
               res
                 .status(500)
-                .json({ error: "cannot reset now tryagain later!" });
+                .json({ error: 'cannot reset now tryagain later!' });
             } else {
               user.password = hash;
               user

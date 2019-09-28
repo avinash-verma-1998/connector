@@ -1,10 +1,31 @@
 const Profile = require("../models/profile");
 
 exports.editUpdateProfile = (req, res, next) => {
-  profileData = {};
-  if (req.body.website) profileData.website = req.body.website;
-  if (req.body.bio) profileData.bio = req.body.bio;
-  if (req.body.gender) profileData.gender = req.body.gender;
-  if (req.body.profileImageUrl)
-    profileData.profileImageUrl = req.body.profileImageUrl;
+  Profile.findOne({ user: req.user.id })
+    .then(profile => {
+      console.log(profile, req.user);
+      if (profile) {
+        if (req.body.website) profile.website = req.body.website;
+        if (req.body.bio) profile.bio = req.body.bio;
+        if (req.body.gender) profile.gender = req.body.gender;
+        if (req.file) profile.profileImageUrl = req.file.path;
+        return profile.save().then(profile => res.json(profile));
+      } else {
+        profileData = {};
+        profileData.website = req.body.website;
+        profileData.bio = req.body.bio;
+        profileData.gender = req.body.gender;
+        profileData.profileImageUrl = req.file
+          ? req.file.path
+          : "/images/download.png";
+        profileData.user = req.user.id;
+        newProfile = new Profile(profileData);
+        return newProfile.save().then(profile => {
+          res.json(profile);
+        });
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };

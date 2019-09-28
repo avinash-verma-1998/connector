@@ -1,6 +1,6 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const authenticate = require("../utils/authMiddleware");
+const authenticate = require('../utils/authMiddleware');
 
 const {
   signUpUser,
@@ -8,13 +8,13 @@ const {
   sendEmail,
   resetPassword,
   getUserById
-} = require("../controllers/userController");
+} = require('../controllers/userController');
 
-router.get("/:userId", authenticate, getUserById);
+router.get('/:userId', authenticate, getUserById);
 
-router.post("/register", signUpUser);
-router.post("/login", loginUser);
-router.post("/resetpassword", sendEmail);
-router.post("/reset/:token", resetPassword);
+router.post('/register', signUpUser);
+router.post('/login', loginUser);
+router.post('/resetpassword', sendEmail);
+router.post('/reset/:token', resetPassword);
 
 module.exports = router;
