@@ -8,7 +8,8 @@ const {
   like,
   unlike,
   comment,
-  uncomment
+  uncomment,
+  getPostbyid
 } = require('../controllers/postControllers');
 
 const authenticate = require('../utils/authMiddleware');
@@ -19,15 +20,17 @@ router.get('/getPost', authenticate, getloggedinUserPosts);
 
 router.get('/getAll', authenticate, getPosts);
 
+router.get('/unlike/:postId', authenticate, unlike);
+
+router.get('/:postId', authenticate, getPostbyid);
+
+router.get('/like/:postId', authenticate, like);
+
 router.post('/create', authenticate, createPost);
 
 router.post('/comment/:postId', authenticate, comment);
 
-router.get('/uncomment/:postId/:commentId', authenticate, uncomment);
-
-router.get('/like/:postId', authenticate, like);
-
-router.get('/unlike/:postId', authenticate, unlike);
+router.delete('/uncomment/:postId/:commentId', authenticate, uncomment);
 
 router.delete('/delete/:postId', authenticate, deletePost);
 

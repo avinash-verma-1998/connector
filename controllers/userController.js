@@ -79,7 +79,7 @@ exports.loginUser = (req, res, next) => {
           username: user.username,
           email: user.email
         };
-        jwt.sign(payload, secret, { expiresIn: '2h' }, (err, token) => {
+        jwt.sign(payload, secret, { expiresIn: '6h' }, (err, token) => {
           if (err) {
             console.log(err);
             return res.status(500);
