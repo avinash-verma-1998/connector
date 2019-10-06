@@ -1,5 +1,0 @@
-start with routes first
-implement rest password
-implement file system for storing image
-
-also add functionality to tag users
