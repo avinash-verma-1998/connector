@@ -3,12 +3,13 @@ const mongoose = require('mongoose');
 const multer = require('multer');
 const bodyParser = require('body-parser');
 const path = require('path');
+const app = express();
 
 const userRoutes = require('./routes/userRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const postRoutes = require('./routes/postRoutes');
+const mongoUri = require('./utils/keys').mongoUri;
 
-const app = express();
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'images');
@@ -43,6 +44,13 @@ app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single('image')
 );
 
+//
+
+// chat.on('connection', () => {
+//   console.log('connected to chat');
+// });
+// //
+
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
@@ -54,10 +62,11 @@ app.use('/post', postRoutes);
 app.use((req, res) => {
   res.send('<h1>Page not found</h1> ');
 });
+
 const PORT = process.env.PORT || 5000;
 
 mongoose
-  .connect('mongodb://localhost:27017/app-test', {
+  .connect(mongoUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })

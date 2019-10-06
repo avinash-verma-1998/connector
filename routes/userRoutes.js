@@ -7,11 +7,13 @@ const {
   loginUser,
   sendEmail,
   resetPassword,
-  getUserById
+  getUserById,
+  updateUser
 } = require('../controllers/userController');
 
 router.get('/:userId', authenticate, getUserById);
 
+router.post('/edit', authenticate, updateUser);
 router.post('/register', signUpUser);
 router.post('/login', loginUser);
 router.post('/resetpassword', sendEmail);

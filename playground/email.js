@@ -8,3 +8,8 @@
 // }).catch(err => {
 //     console.log(err)
 // })
+
+let st = 'thisdfd\\dfdfdf';
+let part = st.split('\\')[1];
+console.log(st);
+console.log(part);

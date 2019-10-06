@@ -1,7 +1,11 @@
-const router = require("express").Router();
-const { editUpdateProfile } = require("../controllers/profileControllers");
-const authenticate = require("../utils/authMiddleware");
+const router = require('express').Router();
+const {
+  editUpdateProfile,
+  getProfile
+} = require('../controllers/profileControllers');
+const authenticate = require('../utils/authMiddleware');
 
-router.post("/edit", authenticate, editUpdateProfile);
+router.get('/current', authenticate, getProfile);
+router.post('/edit', authenticate, editUpdateProfile);
 
 module.exports = router;

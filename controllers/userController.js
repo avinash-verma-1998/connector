@@ -88,7 +88,7 @@ exports.loginUser = (req, res, next) => {
               email: user.email,
               username: user.username,
               id: user.id,
-
+              name: user.name,
               token: `Bearer ${token}`
             });
           }
@@ -127,7 +127,7 @@ exports.sendEmail = (req, res, next) => {
             <h2> Reset password</h2>
             <p> click the link bellow to reset your password
             </p>
-            <a href="http://localhost:5000/user/reset/${token}">Reset password</a>
+            <a href="${process.env.PORT}/user/reset/${token}">Reset password</a>
             `
           })
           .then(res => {
@@ -178,6 +178,22 @@ exports.resetPassword = (req, res) => {
 
 exports.getUserById = (req, res) => {
   User.findOne({ _id: req.params.userId })
+    .then(user => {
+      res.json(user);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+exports.updateUser = (req, res, next) => {
+  const updateData = {};
+  // hash the password first
+
+  if (req.body.email) updateData.email = req.body.email;
+  if (req.body.name) updateData.name = req.body.name;
+  if (req.body.username) updateData.username = req.body.username;
+
+  User.updateOne({ _id: req.user.id }, { $set: updateData })
     .then(user => {
       res.json(user);
     })

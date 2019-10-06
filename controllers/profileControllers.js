@@ -17,12 +17,28 @@ exports.editUpdateProfile = (req, res, next) => {
         profileData.gender = req.body.gender;
         profileData.profileImageUrl = req.file
           ? req.file.path
-          : '/images/download.png';
+          : 'images/download.png';
         profileData.user = req.user.id;
         newProfile = new Profile(profileData);
         return newProfile.save().then(profile => {
           res.json(profile);
         });
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
+exports.getProfile = (req, res, next) => {
+  Profile.findOne({
+    user: req.user.id
+  })
+    .then(profile => {
+      if (profile) {
+        return res.json(profile);
+      } else {
+        res.json({ profile: false });
       }
     })
     .catch(err => {
