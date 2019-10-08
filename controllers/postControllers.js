@@ -67,13 +67,13 @@ exports.deletePost = (req, res, next) => {
           return res.json({ error: 'cannot delete post by other users' });
         } else {
           Post.deleteOne({ _id: req.params.postId }).then(result => {
+            res.json({ message: 'deleted' });
             const postname = post.postImageUrl.split('\\')[1];
 
-            postPath = path.join(__dirname, '/../', 'images', postname);
+            postPath = path.join(__dirname, '..', 'images', postname);
             fs.unlink(postPath, err => {
               console.log(err);
             });
-            return res.json({ message: 'deleted' });
           });
         }
       }
