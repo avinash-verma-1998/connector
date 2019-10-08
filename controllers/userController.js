@@ -117,7 +117,7 @@ exports.sendEmail = (req, res, next) => {
         return user.save();
       })
       .then(user => {
-        res.json(user);
+        res.json({ message: 'email dispatched' });
         transporter
           .sendMail({
             to: req.body.email,
@@ -127,7 +127,7 @@ exports.sendEmail = (req, res, next) => {
             <h2> Reset password</h2>
             <p> click the link bellow to reset your password
             </p>
-            <a href="${process.env.PORT}/user/reset/${token}">Reset password</a>
+            <a href="https://connector-angular.firebaseapp.com/restpassword/${token}">Reset password</a>
             `
           })
           .then(res => {
@@ -161,7 +161,7 @@ exports.resetPassword = (req, res) => {
               user
                 .save()
                 .then(user => {
-                  res.json(user);
+                  res.json({ message: 'changed' });
                 })
                 .catch(err => {
                   console.log(err);
