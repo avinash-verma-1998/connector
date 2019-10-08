@@ -64,17 +64,15 @@ app.use((req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-
+app.listen(PORT, () => {
+  console.log(`server is up and running on port ${PORT}`);
+});
 mongoose
   .connect(mongoUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+    useNewUrlParser: true
   })
   .then(res => {
     console.log('connected to database');
-    app.listen(PORT, () => {
-      console.log(`server is up and running on port ${PORT}`);
-    });
   })
   .catch(err => {
     console.log(err);
