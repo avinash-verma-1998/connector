@@ -25,7 +25,7 @@ exports.signUpUser = (req, res, next) => {
       res.status(500).json({ error: 'cannot register now tryagain later!' });
     } else {
       (signUpData.name = req.body.name),
-        (signUpData.email = req.body.email),
+        (signUpData.email = req.body.email.toLowerCase()),
         (signUpData.username = req.body.username),
         (signUpData.password = hash);
       User.findOne({ email: signUpData.email }).then(user => {
@@ -60,7 +60,7 @@ exports.signUpUser = (req, res, next) => {
 };
 
 exports.loginUser = (req, res, next) => {
-  User.findOne({ email: req.body.email }).then(user => {
+  User.findOne({ email: req.body.email.toLowerCase() }).then(user => {
     if (!user) {
       return res.status(400).json({ email: 'email not found' });
     }
@@ -77,7 +77,7 @@ exports.loginUser = (req, res, next) => {
           id: user._id,
           name: user.name,
           username: user.username,
-          email: user.email
+          email: user.email.toLowerCase()
         };
         jwt.sign(payload, secret, { expiresIn: '6h' }, (err, token) => {
           if (err) {
@@ -85,7 +85,7 @@ exports.loginUser = (req, res, next) => {
             return res.status(500);
           } else {
             res.json({
-              email: user.email,
+              email: user.email.toLowerCase(),
               username: user.username,
               id: user.id,
               name: user.name,
@@ -105,7 +105,7 @@ exports.sendEmail = (req, res, next) => {
       return res.status(500).json({ error: 'crypto error' });
     }
     const token = buffer.toString('hex');
-    User.findOne({ email: req.body.email })
+    User.findOne({ email: req.body.email.toLowerCase() })
       .then(user => {
         if (!user) {
           return res.status(400).json({
@@ -189,7 +189,7 @@ exports.updateUser = (req, res, next) => {
   const updateData = {};
   // hash the password first
 
-  if (req.body.email) updateData.email = req.body.email;
+  if (req.body.email) updateData.email = req.body.email.toLowerCase();
   if (req.body.name) updateData.name = req.body.name;
   if (req.body.username) updateData.username = req.body.username;
 
